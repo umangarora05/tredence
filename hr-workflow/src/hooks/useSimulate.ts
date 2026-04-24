@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useWorkflow } from './useWorkflow';
-import { serializeWorkflow } from '../utils/serializer';
+import { simulateWorkflowLocally } from '../utils/simulateLocal';
 import type { SimulationResult } from '../types/workflow';
 
 export const useSimulate = () => {
@@ -15,14 +15,7 @@ export const useSimulate = () => {
     setError(null);
 
     try {
-      const payload = serializeWorkflow(nodes, edges);
-      const res = await fetch('/api/simulate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      
-      const data = await res.json() as SimulationResult;
+      const data = await simulateWorkflowLocally(nodes, edges);
       setResult(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error during simulation');
