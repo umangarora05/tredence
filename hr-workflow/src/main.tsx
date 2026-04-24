@@ -4,9 +4,14 @@ import App from './App.tsx';
 import './index.css';
 
 async function enableMocking() {
-  if (!import.meta.env.DEV) {
+  const shouldMock =
+    import.meta.env.DEV ||
+    import.meta.env.VITE_ENABLE_MSW === 'true';
+
+  if (!shouldMock) {
     return;
   }
+  
   const { worker } = await import('./mocks/browser');
   return worker.start({ onUnhandledRequest: 'bypass' });
 }
